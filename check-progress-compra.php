@@ -1,7 +1,7 @@
 <?php
     header("Content-type:application/json");
 
-    include("conectar.php");
+    include("db/conectar.php");
     include_once("funciones.php");
 
     $id_usuario = $_COOKIE['Id'];

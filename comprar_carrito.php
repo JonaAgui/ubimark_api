@@ -1,6 +1,6 @@
 <?PHP
     header("Content-Type:application/json");
-    include_once("conectar.php");
+    include_once("db/conectar.php");
     include("funciones.php");
     $Id = $_COOKIE['Id'];
     $sql = "SELECT c.*,p.precio,p.existencias,p.nombre_producto FROM carrito c JOIN productos p ON p.Id_producto = c.Id_producto WHERE c.Id_usuario = ?";

@@ -1,6 +1,6 @@
 <?PHP
     header("Content-Type:application/json");
-    include_once("conectar.php");
+    include_once("db/conectar.php");
     include("funciones.php");
     $Id = $_COOKIE['Id'];
     if(isset($_POST['required'])){

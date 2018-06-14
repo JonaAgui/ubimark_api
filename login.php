@@ -1,6 +1,6 @@
 <?php
     header("Content-Type:application/json");
-    include_once("conectar.php");
+    include_once("db/conectar.php");
     include("funciones.php");
     $correo = $_POST['email'];
     $pass = $_POST['password'];

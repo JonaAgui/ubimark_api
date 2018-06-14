@@ -1,6 +1,6 @@
 <?PHP
     header("Content-type:application/json");
-    include_once("conectar.php");
+    include_once("db/conectar.php");
     include("funciones.php");
     $nombre_empresa = $_POST['nombre_empresa'];
     $sql =  "SELECT * FROM empresa WHERE nombre_empresa = ?";

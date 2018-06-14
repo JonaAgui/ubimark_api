@@ -1,6 +1,6 @@
 <?PHP 
     header("Content-type:application/json");
-    include("conectar.php");
+    include("db/conectar.php");
     include("funciones.php");
     setcookie('Activo',"True",time()-3600,'','','',TRUE);
     setcookie('Id','',time()-3600,'','','',TRUE);

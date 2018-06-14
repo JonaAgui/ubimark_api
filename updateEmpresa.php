@@ -1,6 +1,6 @@
 <?PHP 
     header("Content-Type:application/json");
-    include_once("conectar.php");
+    include_once("db/conectar.php");
     include_once("funciones.php");
     $paramsRequired = array("NotNull"=>array("coordenadas","nombre_empresa","email","telefono","RFC","cp","calle","numero","ciudad","delegacion","estado"),"Null"=>array("numinterior")); 
     $params = $_POST;

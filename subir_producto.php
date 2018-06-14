@@ -1,6 +1,6 @@
 <?PHP
     header("Content-Type:application/json");
-    include("conectar.php");
+    include_once("db/conectar.php");
     include("funciones.php"); 
     
     //Datos del producto a subir

@@ -1,6 +1,6 @@
 <?php
     header("Content-Type:application/json");
-    include("conectar.php");
+    include_once("db/conectar.php");
     include("funciones.php");
     $table = "usuario";
     $params = $_POST;

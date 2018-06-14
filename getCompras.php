@@ -1,6 +1,6 @@
 <?PHP
     header("Content-type:application/json");
-    include_once("conectar.php");
+    include_once("db/conectar.php");
     include("funciones.php");
     $Id = $_COOKIE['Id'];
     $sql = "SELECT pe.*,p.nombre_producto 

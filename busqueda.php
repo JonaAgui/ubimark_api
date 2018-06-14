@@ -1,6 +1,6 @@
 
 <?PHP
-    include_once("conectar.php");
+    include_once("db/conectar.php");
     include("funciones.php");
     //Funcion para comprobar si existe una etiqueta
     function tag_exist($tag,$tags,$enlace){

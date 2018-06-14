@@ -1,6 +1,6 @@
 <?php
     header("Content-type:application/json");
-    include("conectar.php");
+    include_once("db/conectar.php");
     include("funciones.php");
     //Se obtinen los datos a actualizar
     $table = "usuario";

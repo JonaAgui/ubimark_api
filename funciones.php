@@ -1,5 +1,5 @@
 <?php
-    include_once("conectar.php");
+    include_once("db/conectar.php");
     include('lib/log4php/Logger.php');
 
     function check_session(){

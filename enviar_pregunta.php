@@ -1,6 +1,6 @@
 <?PHP 
     header("Content-Type:application/json");
-    include_once("conectar.php");
+    include_once("db/conectar.php");
     include_once("funciones.php");
     $params = $_POST;
     $params['Id_cliente'] = $_COOKIE['Id'];

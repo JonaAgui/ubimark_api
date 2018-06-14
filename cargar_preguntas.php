@@ -1,6 +1,6 @@
 <?PHP 
     header("Content-Type:application/json");
-    include_once("conectar.php");
+    include_once("db/conectar.php");
     include_once("funciones.php");
    
     $Id_producto = $_POST['Id_producto'];

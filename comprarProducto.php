@@ -1,6 +1,6 @@
 <?PHP
     header("Content-Type:application/json");
-    include_once("conectar.php");
+    include_once("db/conectar.php");
     include("funciones.php");
     $sess = check_session();
     if($sess['status_code'] != 101){
