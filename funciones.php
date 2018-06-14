@@ -2,6 +2,15 @@
     include_once("db/conectar.php");
     include('lib/log4php/Logger.php');
 
+    function acceptedsParamError($acceptedParams,$param){
+        return array("Parametros aceptados" => $acceptedParams, "Parametro" => $param);
+    }
+
+    function acceptedValueError($acceptedValues,$value){
+        return array("Valores Aceptados" => $acceptedValues, "Valor" => $value);
+    }
+
+
     function check_session(){
         $link = getDBConnection();
         if(!isset($_COOKIE['Id']) || !isset($_COOKIE['token'])){
