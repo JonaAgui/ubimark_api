@@ -11,7 +11,7 @@
     $actual = time();
     $actual = $date->format("Y-m-d H:i:s");
     $params['fecha'] = $actual;
-    $result = dbInsert("respuestas","issis",$params);
+    $result = dbInsert("respuestas","iss",$params);
     $result['data']['fecha'] = $actual;
     echo json_encode($result);
 

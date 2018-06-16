@@ -17,11 +17,29 @@
     }
 
     echo json_encode($res);
-
     function get($req){
+        global $log;
+        if(isset($req['id_producto'])){
+            $log->trace("Por id producto");
+            return getXIdProd($req);
+        }else if(isset($req['tipo'])){
+            switch($req['tipo']){
+                case "PERSONAL":
+                    $log->trace("Por vendedor particular");
+                    return getXUser($req);
+                    break;
+                case "EMPRESA":
+                    $log->trace("Por vendedor empresa");
+                    return getXEmpresa($req);
+                    break;
+            }
+            
+        }
+    }
+    function getXIdProd($req){
         global $db;
         global $log;
-        $id = $req['key'];
+        $id = $req['id_producto'];
         $log->info("Buscando producto...");
         $sql = "SELECT p.* FROM productos p WHERE p.Id_producto = ?";
         if($query = $db->prepare($sql)){
@@ -75,4 +93,45 @@
         $row['vendedor']['addrs'] = preg_split("[\|]",$row['vendedor']['addr']);
         unset($row['vendedor']['addr']);
         return response(200,$row);
+    }
+
+    function getXUser($req){
+        global $log;
+        global $db;
+        $Id = $_COOKIE['Id'];
+        $sql = "SELECT * 
+                FROM productos p  
+                WHERE Id_usuario = ? AND tipo_cuenta = 'PERSONAL'";
+        if($query =$db -> prepare($sql)){
+            $query->bind_param("i",$Id);
+            $query->execute();
+            $res = $query->get_result();
+            $query->close();
+        }else{
+            return response(300,sqlError($sql,"i",$Id));
+            
+        }
+        $result=array();
+        while($row = $res->fetch_Assoc()){
+            $sql = "SELECT path, Id_usuario 
+                    FROM imagen_prod 
+                    WHERE Id_producto = ? 
+                    LIMIT 1";
+            if($query=$db->prepare($sql)){
+                $query->bind_param("i",$row['Id_producto']);
+                $query->execute();
+                $query->bind_result($path,$id_usuario);
+                $query->fetch();
+                $query->close();
+            }else{
+                return response(300,sqlError($sql,"i",$Id));
+            }
+            $row['imagen']=array("path" => $path,"Id_usuario" => $id_usuario);
+            array_push($result,$row);
+        }
+        return response(200,$result);
+    }
+
+    function getXEmpresa($req){
+
     }
