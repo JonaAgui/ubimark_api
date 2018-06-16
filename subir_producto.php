@@ -61,7 +61,7 @@
             $nombre = date('zwjtnyGis').$params['Id_usuario'].$id_prod.$i.$extension ;
             $tipo = $_FILES[$key]['type'];
             $tam = $_FILES[$key]['size'];
-            $file="../intranet/usuarios/".$params['Id_usuario'].'/uploads/'.$nombre;
+            $file="intranet/usuarios/".$params['Id_usuario'].'/uploads/'.$nombre;
             $tmp_img = $_FILES[$key]['tmp_name'];
             move_uploaded_file($tmp_img, $file);
 

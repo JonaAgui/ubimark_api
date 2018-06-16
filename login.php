@@ -19,7 +19,7 @@
      * @return void
      */
     function generate_directory($id){
-        $filename = "../intranet/usuarios/" . $id . "/uploads/";
+        $filename = "intranet/usuarios/" . $id . "/uploads/";
         if (!file_exists($filename)) {
             mkdir($filename, 0777, true);
         }

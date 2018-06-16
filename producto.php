@@ -12,6 +12,12 @@
             $req = $_GET;
             $res = get($req);
             break;
+        case "DELETE":
+            $log->trace("DELETE");
+            parse_str(file_get_contents("php://input"),$req);
+            $req = getRequest($req,file_get_contents("php://input"));
+            $res = delete($req); 
+            break;
         default:
             $res = response(500,methodError($acceptedMethods,$method));
     }
@@ -41,7 +47,7 @@
         global $log;
         $id = $req['id_producto'];
         $log->info("Buscando producto...");
-        $sql = "SELECT p.* FROM productos p WHERE p.Id_producto = ?";
+        $sql = "SELECT p.* FROM productos p WHERE p.Id_producto = ? AND estado = 'AC'";
         if($query = $db->prepare($sql)){
             $query->bind_param("i",$id);
             $query->execute();
@@ -101,7 +107,7 @@
         $Id = $_COOKIE['Id'];
         $sql = "SELECT * 
                 FROM productos p  
-                WHERE Id_usuario = ? AND tipo_cuenta = 'PERSONAL'";
+                WHERE Id_usuario = ? AND tipo_cuenta = 'PERSONAL' AND estado = 'AC'";
         if($query =$db -> prepare($sql)){
             $query->bind_param("i",$Id);
             $query->execute();
@@ -134,4 +140,11 @@
 
     function getXEmpresa($req){
 
+    }
+
+
+    function delete($req){
+        global $log;
+        $log->trace($req);
+        return dbUpdate("productos","s",array("estado"=>"IN"),"i",$req);  
     }
