@@ -20,18 +20,17 @@
         }
     }
     
-    $filename = "../intranet/empresas/" . $params['nombre_empresa'] . "/uploads/";
+    $filename = "intranet/empresas/" . $params['nombre_empresa'] . "/uploads/";
     if (!file_exists($filename)) {
         mkdir($filename, 0777, true);
     }
-    copy("../paginas/plantilla-empresa.html","../intranet/empresas/" . $params['nombre_empresa'] ."/index.html");
     foreach($_FILES as $key => $val){
         if($val['error'] == 0){
             $extension = substr($_FILES[$key]['name'], strrpos($_FILES[$key]['name'], '.'), strlen($_FILES[$key]['name']));
             $nombre = $key.$params['nombre_empresa'].date('zwjtnyGis').$params['Id_usuario'].$extension;
             $tipo = $_FILES[$key]['type'];
             $tam = $_FILES[$key]['size'];
-            $file = "../intranet/empresas/".$params['nombre_empresa'].'/uploads/'.$nombre;
+            $file = "intranet/empresas/".$params['nombre_empresa'].'/uploads/'.$nombre;
             $tmp_img = $_FILES[$key]['tmp_name'];
             move_uploaded_file($tmp_img, $file);
             $params[$key] = $nombre;

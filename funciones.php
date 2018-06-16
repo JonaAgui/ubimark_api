@@ -12,6 +12,14 @@
         return array("Valores Aceptados" => $acceptedValues, "Valor" => $value);
     }
 
+    function arr2str($arr){
+        $str = "";
+        foreach($arr AS $key => $val){
+            $str .= $key."=>".$val.",";
+        }
+        return $str;
+    }
+
 
     function check_session(){
         $link = getDBConnection();
@@ -55,6 +63,7 @@
      * @return array Respuesta en formato json 
      */
     function dbDelete($table,$types,$params){
+        global $log;
         $link = getDBConnection();
         $sql = "DELETE FROM ".$table." WHERE ";
         $values = array();
@@ -70,6 +79,7 @@
         for($i = 0; $i < count($values); $i++) {
             $a_params[] = & $values[$i];
         }
+        $log->trace($sql." ". arr2str($a_params));
         if($query = $link->prepare($sql)){
             call_user_func_array(array($query,'bind_param'),$a_params);
             $query->execute();
