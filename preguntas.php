@@ -3,17 +3,18 @@
     include("funciones.php");
     $acceptedMethods = array("GET","POST");
     $method = getMethod(); 
-    $log  = getLogger("Carrito");
+    $log  = getLogger("Preguntas");
     $db = getDBConnection();
 
     switch($method){
         case "GET":
+            $log->trace("GET");
             $req = $_GET;
             $res = get($req);
             break;
         case "POST":  
-            $req = getRequest($_POST,file_get_contents("php://input"));
             $log -> trace("POST");
+            $req = getRequest($_POST,file_get_contents("php://input"));
             $res = post($req);
             break;
         default:
@@ -23,21 +24,28 @@
     echo json_encode($res);
 
     function get($req){
+        global $log;
+        
         $acceptedParams=array("Id_producto","tipo");
         if(isset($req['Id_producto'])){
+            $log->info("Preguntas por producto");
             return getXProducto($req);
         }else if(isset($req['tipo'])){
             $accepted_types = array("EMPRESA","PERSONAL");
-            switch ($req['tipo']){
+            switch ($req['tipo']){ 
                 case "EMPRESA":
+                    $log->info("Preguntas por empresa");
                     return getEmpresa($req);
                 case "PERSONAL":
+                    $log->info("Preguntas por personal");
                     return getPersonal($req);
                     break;
                 default:
+                    $log->warn("Tipo incorrecto");
                     return response(501, acceptedValueError($accepted_types,$req['tipo']));
             }
         }else{
+            $log->warn("Parametros incorrectos");
             return response(306, acceptedParamsError($acceptedParams,$req[0]));
         }
         
@@ -184,7 +192,9 @@
         global $db;
         $preguntas_prod = array();
         while($row = $res -> fetch_Assoc()){
-            $sql3 = "SELECT * FROM respuestas WHERE Id_pregunta = ?";
+            $sql3 = "SELECT * 
+                    FROM respuestas 
+                    WHERE Id_pregunta = ?";
             if($query = $db -> prepare($sql3)){
                 $query -> bind_param("i",$row['Id_pregunta']);
                 $query -> execute();

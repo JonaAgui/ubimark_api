@@ -1,7 +1,9 @@
 <?php
     include_once("db/conectar.php");
     include('lib/log4php/Logger.php');
-
+   
+    $dblogger;
+    $log;
     function acceptedsParamError($acceptedParams,$param){
         return array("Parametros aceptados" => $acceptedParams, "Parametro" => $param);
     }
@@ -177,7 +179,13 @@
      */
     function getLogger($class){
         Logger::configure('config.xml');
-        return Logger::getLogger($class);;
+        $dblogger =  Logger::getLogger("db.".$class);
+        return Logger::getLogger($class);
+    }
+
+    function getDBLogger(){
+        global $dblogger;
+        return $dblogger;
     }
 
     function getMethod(){
