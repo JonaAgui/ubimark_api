@@ -1,9 +1,57 @@
-
 <?PHP
-    include_once("db/conectar.php");
+    header("Content-Type:application/json");
     include("funciones.php");
-    //Funcion para comprobar si existe una etiqueta
-    function tag_exist($tag,$tags,$enlace){
+    $acceptedMethods = array("GET");
+    $method = getMethod(); 
+    $log  = getLogger("Buscador");
+    $db = getDBConnection();
+    switch($method){
+        case "GET":
+            $req = $_GET;
+            $res = get($req);
+            break;
+        default:
+            $res = response(500,methodError($acceptedMethods,$method));
+    }
+
+    echo json_encode($res);
+
+    function get($req){
+        global $log;
+        global $db;
+        $token = $req['search'];
+        $results = buscar($token);
+        $result = array();
+        foreach($results as &$val){
+            $sql = "SELECT P.* FROM productos P WHERE P.Id_producto=? AND estado = 'AC'";
+            if($query=$db->prepare($sql)){
+                $query->bind_param("i",$val);
+                $query->execute();
+                $res=$query->get_result();
+                $query->close();
+            }else{
+                return response(300,"i",$val);
+            }
+            while($row = $res-> fetch_Assoc()){
+                $sql = "SELECT path, Id_usuario AS uploader FROM imagen_prod WHERE Id_producto = ? LIMIT 1";
+                if($query=$db->prepare($sql)){
+                    $query->bind_param("i",$val);
+                    $query->execute();
+                    $res2 = $query -> get_result();
+                    $query->close();
+                }else{
+                    return response(300,sqlError($sql,"i",$val));
+                }
+                $row['image'] = $res2->fetch_Assoc();
+                $result[$val] = $row;
+            }
+        }
+
+        return response(200,$result);
+
+    }
+
+    function tag_exist($tag,$tags,$db){
         $c = 0;
         $tag="%".$tag."%";
         $params = "s";
@@ -23,7 +71,7 @@
         for($i = 0; $i < count($tags); $i++) {
             $a_params[] = & $tags[$i];
         }
-        if($query=$enlace->prepare($sql)){
+        if($query=$db->prepare($sql)){
             call_user_func_array(array($query,'bind_param'),$a_params);
             $query->execute();
             $query->bind_result($c);
@@ -35,7 +83,7 @@
     }
 
     //Funcion que obtiene los productos pertenecientes a $a\$e 
-    function multiTag2Product($a,$e,$enlace){
+    function multiTag2Product($a,$e,$db){
         //Define la cantidad de elementos del conjunto $a y genera la instruccion sql
         $n=count($a);
         
@@ -71,7 +119,7 @@
           $a_params[] = & $e[$i];
         }
         //ejecuta la consulta sql preparada y devuelve $a\$b
-        if($query=$enlace->prepare($sql)){
+        if($query=$db->prepare($sql)){
             call_user_func_array(array($query,'bind_param'),$a_params);
             $query->execute();
             $res=$query->get_result();
@@ -83,12 +131,12 @@
 
 
     function buscar($token,$results = array()){
-        $enlace = getDBConnection();
+        $db = getDBConnection();
         $arr = preg_split("/[\s,]+/",$token);
 
         //Se realiza la primera busqueda en el nombre del producto y se almacenan los resultados
         $prod="%".$token."%";
-        if($query=$enlace->prepare("SELECT Id_producto FROM productos WHERE nombre_producto LIKE ?")){
+        if($query=$db->prepare("SELECT Id_producto FROM productos WHERE nombre_producto LIKE ?")){
             $query->bind_param("s",$prod);
             $query->execute();
             $res=$query->get_result();
@@ -102,7 +150,7 @@
         //Valida si una de las etiquetas encontradas en la busqueda existe de no ser el caso realiza transformaciones y compara nuevamente
         foreach($arr as &$val){
             $val=strtoupper($val);
-            if (($id_tag=tag_exist($val,$tags,$enlace))> 0){
+            if (($id_tag=tag_exist($val,$tags,$db))> 0){
                 array_push($tags,$id_tag);
             }else{
                 if(strrpos($val,'ES')==strlen($val)-2&&strrpos($val,'ES')>0){
@@ -110,17 +158,17 @@
                     if(strrpos($temp,'C')==strlen($temp)-1){
                         $temp=substr($temp,0,strlen($temp)-1)."Z";
                     }
-                    if(($id_tag=tag_exist($temp,$tags,$enlace))>0){
+                    if(($id_tag=tag_exist($temp,$tags,$db))>0){
                         array_push($tags,$id_tag);
                     }
                 }else if(strrpos($val,'IS')==strlen($val)-2&&strrpos($val,'IS')>0){
                     $temp=substr($val,0,strlen($val)-2)."Y";
-                    if(($id_tag=tag_exist($temp,$tags,$enlace))>0){
+                    if(($id_tag=tag_exist($temp,$tags,$db))>0){
                         array_push($tags,$id_tag);
                     }
                 }else if(strrpos($val,'S')==strlen($val)-1){
                     $temp=substr($val,0,strlen($val)-1);
-                    if(($id_tag=tag_exist($temp,$tags,$enlace))>0){
+                    if(($id_tag=tag_exist($temp,$tags,$db))>0){
                         array_push($tags,$id_tag);
                     }else{
                         $val=$temp;
@@ -128,7 +176,7 @@
                 }
                 if(strrpos($val,"A")==strlen($val)-1||strrpos($val,"O")==strlen($val)-1){
                     $temp=substr($val,0,strlen($val)-1);
-                    if(($id_tag=tag_exist($temp,$tags,$enlace))>0){
+                    if(($id_tag=tag_exist($temp,$tags,$db))>0){
                         array_push($tags,$id_tag);
                     }
                 }
@@ -141,7 +189,7 @@
         //Se comprueba que la busqueda contenga al menos una etiqueta valida
         if(count($tags)>0){
             //Se realiza la primera busqueda por etiquetas donde el producto coincida con cada etiqueta en $tags y se almacenan los resultados
-            $temp=multiTag2Product($tags,$results,$enlace);
+            $temp=multiTag2Product($tags,$results,$db);
             while($row=$temp->fetch_Assoc()){
                 array_push($results,$row['Id_producto']);
             }
@@ -160,7 +208,7 @@
                             array_push($tags2use, $tags[$temp]);//se toman los indices para obtener una combinacion de $n etiquetas
                         } 
                         //Se realiza la busqueda de productos que coinciden con n etiquetas
-                        $r=multiTag2Product($tags2use,$results,$enlace);
+                        $r=multiTag2Product($tags2use,$results,$db);
                         while($row=$r->fetch_Assoc()){
                             array_push($results,$row['Id_producto']);
                         }
@@ -191,7 +239,7 @@
                                         array_push($tags2use, $tags[$temp]);
                                     }
                                 }               
-                                $r=multiTag2Product($tags2use,$results,$enlace);
+                                $r=multiTag2Product($tags2use,$results,$db);
                                 while($row=$r->fetch_Assoc()){
                                     array_push($results,$row['Id_producto']);
                                 }
@@ -208,7 +256,7 @@
                 foreach($tags as &$temp){
                     $t=array();
                     array_push($t,$temp);
-                    $r=multiTag2Product($t,$results,$enlace);
+                    $r=multiTag2Product($t,$results,$db);
                     while($row=$r->fetch_Assoc()){
                         array_push($results,$row['Id_producto']);
                     }
@@ -217,4 +265,4 @@
         }
         return $results;
     }
-    ?>
+?>
