@@ -38,6 +38,28 @@
         $row['ruta_img'] = $ruta;
         $row['autor_img'] = $autor_img;
         $notificacion = $row;
+    }else if(strcmp($row['tipo'],"RESPUESTA")==0){
+        $sql2 = "SELECT r.respuesta,i.path,i.Id_usuario ,if(count(pe.Id_empresa)> 0, 'EMPRESA' , 'PERSONAL')as tipo_vendedor
+                FROM respuestas r 
+                JOIN preguntas p ON r.Id_pregunta = p.Id_pregunta
+                JOIN imagen_prod i ON i.Id_producto = p.Id_producto
+                LEFT JOIN preguntas_empresa pe ON pe.Id_pregunta = p.Id_pregunta
+                LEFT JOIN preguntas_personal pp ON pp.Id_pregunta = p.Id_pregunta
+                WHERE r.Id_respuesta = ?";
+        if($query = $enlace -> prepare($sql2)){
+            $query -> bind_param("i",$row['origen']);
+            $query -> execute();
+            $query -> bind_result($mensaje,$ruta,$autor_img,$vendedor);
+            $query -> fetch();
+            $query -> close();
+        }else{
+            echo json_encode(response(300,sqlError($sql2,"i",array("Id_pregunta"=>$row['origen']))));
+            return;
+        }
+        $row['mensaje'] = $mensaje;
+        $row['ruta_img'] = $ruta;
+        $row['autor_img'] = $autor_img;
+        $notificacion = $row;
     }
     echo json_encode(response(200,$notificacion));
 

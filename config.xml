@@ -5,6 +5,16 @@
             </layout>
             <param name="file" value="phpLog.log" />
         </appender>
+        <appender name="dbappender" class="LoggerAppenderFile">
+            <layout class="LoggerLayoutPattern">
+                <param name="conversionPattern" value="%date [%logger] %message%newline" />
+            </layout>
+            <param name="file" value="dbQuerys.log" />
+        </appender>
+        <logger name="db">
+            <level value="TRACE" />
+            <appender_ref ref="dbappender" />
+        </logger>
         <root>
             <level value="TRACE" />
             <appender_ref ref="appender" />
