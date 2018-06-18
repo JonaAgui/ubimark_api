@@ -2,10 +2,12 @@
     header("Content-Type:application/json");
     include_once("db/conectar.php");
     include("funciones.php");
+    $log = getLogger("Login");
     $correo = $_POST['email'];
     $pass = $_POST['password'];
+    $Id_localizacion = $_POST['Id_localizacion'];
     if(notNull($correo) && notNull($pass)){
-        login($correo,$pass,$enlace);
+        login($correo,$pass,$Id_localizacion,$enlace);
     }else{
         echo json_encode(response(302));
     }
@@ -33,7 +35,7 @@
      * @param object $enlace
      * @return void
      */
-    function login($correo,$pass,$enlace){
+    function login($correo,$pass,$Id_localizacion,$enlace){
         $sql = "SELECT count(*) as found, Id_usuario, contrasena, trabaja_en FROM usuario WHERE correo = ?";
         if ($query = $enlace -> prepare($sql)) {
             $query -> bind_param("s", $correo);
@@ -47,7 +49,7 @@
 		
         if ($count==1 && password_verify($pass, $hash)){
             $token = bin2hex(random_bytes(128));
-            $res = reg_active_session($id, $token);
+            $res = reg_active_session($id, $token,$Id_localizacion);
             if($res['status_code'] != 200){
                 echo json_encode($res);
                 return;
@@ -65,7 +67,7 @@
      *
      * @return void
      */
-    function reg_active_session($id,$token){
+    function reg_active_session($id,$token,$Id_localizacion){
         $vigencia = time() + 3600;
         $date = new \DateTime('now', new \DateTimeZone('America/Mexico_City'));
         $date -> setTimestamp($vigencia);
@@ -73,9 +75,10 @@
         $params = array (
             "token" => $token,
             "Id_usuario" => $id,
-            "expira" => $expira
+            "expira" => $expira,
+            "Id_localizacion" => $Id_localizacion
         );
-        return dbInsert("sesiones_activas","sis",$params);
+        return dbInsert("sesiones_activas","sisi",$params);
         
     }
     

@@ -51,7 +51,7 @@
                 break;
                
             case "PERSONAL":
-                $sql = "SELECT CONCAT (nombre,' ',apellidos) AS nombre, telefono, calle, numero, cp, colonia, ciudad
+                $sql = "SELECT CONCAT(nombre,' ',apellidos) AS nombre, telefono, calle, numero, cp, colonia, delegacion as ciudad
                         FROM usuario 
                         WHERE Id_usuario = ?";
                 if($query=$enlace->prepare($sql)){

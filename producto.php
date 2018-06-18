@@ -139,7 +139,40 @@
     }
 
     function getXEmpresa($req){
-
+        global $log;
+        global $db;
+        $Id = $_COOKIE['Id'];
+        $sql = "SELECT * 
+                FROM productos p  
+                WHERE Id_usuario = ? AND tipo_cuenta = 'EMPRESA' AND estado = 'AC'";
+        if($query =$db -> prepare($sql)){
+            $query->bind_param("i",$Id);
+            $query->execute();
+            $res = $query->get_result();
+            $query->close();
+        }else{
+            return response(300,sqlError($sql,"i",$Id));
+            
+        }
+        $result=array();
+        while($row = $res->fetch_Assoc()){
+            $sql = "SELECT path, Id_usuario 
+                    FROM imagen_prod 
+                    WHERE Id_producto = ? 
+                    LIMIT 1";
+            if($query=$db->prepare($sql)){
+                $query->bind_param("i",$row['Id_producto']);
+                $query->execute();
+                $query->bind_result($path,$id_usuario);
+                $query->fetch();
+                $query->close();
+            }else{
+                return response(300,sqlError($sql,"i",$Id));
+            }
+            $row['imagen']=array("path" => $path,"Id_usuario" => $id_usuario);
+            array_push($result,$row);
+        }
+        return response(200,$result);
     }
 
 
