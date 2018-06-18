@@ -3,20 +3,110 @@
             <layout class="LoggerLayoutPattern">
                 <param name="conversionPattern" value="%date [%logger] %message%newline" />
             </layout>
-            <param name="file" value="phpLog.log" />
+            <param name="file" value="logs/log.log" />
         </appender>
-        <appender name="dbappender" class="LoggerAppenderFile">
+
+        <appender name="buscadorAppender" class="LoggerAppenderFile">
             <layout class="LoggerLayoutPattern">
                 <param name="conversionPattern" value="%date [%logger] %message%newline" />
             </layout>
-            <param name="file" value="dbQuerys.log" />
+            <param name="file" value="logs/buscador.log" />
         </appender>
-        <logger name="db">
-            <level value="TRACE" />
-            <appender_ref ref="dbappender" />
-        </logger>
+
+        <appender name="carritoAppender" class="LoggerAppenderFile">
+            <layout class="LoggerLayoutPattern">
+                <param name="conversionPattern" value="%date [%logger] %message%newline" />
+            </layout>
+            <param name="file" value="logs/carrito.log" />
+        </appender>
+
+        <appender name="cuentaAppender" class="LoggerAppenderFile">
+            <layout class="LoggerLayoutPattern">
+                <param name="conversionPattern" value="%date [%logger] %message%newline" />
+            </layout>
+            <param name="file" value="logs/cuenta.log" />
+        </appender>
+
+        <appender name="notificacionAppender" class="LoggerAppenderFile">
+            <layout class="LoggerLayoutPattern">
+                <param name="conversionPattern" value="%date [%logger] %message%newline" />
+            </layout>
+            <param name="file" value="logs/notificacion.log" />
+        </appender>
+
+        <appender name="preguntasAppender" class="LoggerAppenderFile">
+            <layout class="LoggerLayoutPattern">
+                <param name="conversionPattern" value="%date [%logger] %message%newline" />
+            </layout>
+            <param name="file" value="logs/preguntas.log" />
+        </appender>
+
+        <appender name="productoAppender" class="LoggerAppenderFile">
+            <layout class="LoggerLayoutPattern">
+                <param name="conversionPattern" value="%date [%logger] %message%newline" />
+            </layout>
+            <param name="file" value="logs/producto.log" />
+        </appender>
+
+        <appender name="resumenAppender" class="LoggerAppenderFile">
+            <layout class="LoggerLayoutPattern">
+                <param name="conversionPattern" value="%date [%logger] %message%newline" />
+            </layout>
+            <param name="file" value="logs/resumen.log" />
+        </appender>
+
+        <appender name="sesionAppender" class="LoggerAppenderFile">
+            <layout class="LoggerLayoutPattern">
+                <param name="conversionPattern" value="%date [%logger] %message%newline" />
+            </layout>
+            <param name="file" value="logs/sesion.log" />
+        </appender>
+
+        <appender name="localizacionAppender" class="LoggerAppenderFile">
+            <layout class="LoggerLayoutPattern">
+                <param name="conversionPattern" value="%date [%logger] %message%newline" />
+            </layout>
+            <param name="file" value="logs/localizacion.log" />
+        </appender>
+        
         <root>
-            <level value="TRACE" />
+            <level value="WARN" />
             <appender_ref ref="appender" />
         </root>
+        <logger name="Buscador">
+            <level value="TRACE" />
+            <appender_ref ref="buscadorAppender" />
+        </logger>
+        <logger name="Carrito">
+            <level value="TRACE" />
+            <appender_ref ref="carritoAppender" />
+        </logger>
+        <logger name="Cuenta">
+            <level value="TRACE" />
+            <appender_ref ref="cuentaAppender"/>
+        </logger>
+        <logger name="Notificacion">
+            <level value="TRACE" />
+            <appender_ref ref="notificacionAppender"/>
+        </logger>
+        <logger name="Preguntas">
+            <level value="TRACE" />
+            <appender_ref ref="preguntasAppender"/>
+        </logger>
+        <logger name="Producto">
+            <level value="TRACE" />
+            <appender_ref ref="productoAppender"/>
+        </logger>
+        <logger name="Resumen">
+            <level value="TRACE" />
+            <appender_ref ref="resumenAppender"/>
+        </logger>
+        <logger name="Sesion">
+            <level value="TRACE" />
+            <appender_ref ref="sesionAppender"/>
+        </logger>
+        <logger name="Localizacion">
+            <level value="TRACE" />
+            <appender_ref ref="localizacionAppender"/>
+        </logger>
     </configuration>

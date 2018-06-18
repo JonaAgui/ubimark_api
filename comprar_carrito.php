@@ -27,7 +27,7 @@
         $params['cantidad'] = $row['cantidad'];
         $params['total'] = $row['cantidad'] * $row['precio'];
         $params['fecha'] = date("y-m-d");
-        $params['estado'] = "Envio";
+        $params['estado'] = "NO ENVIADO";
         $params['fecha_entrega'] = "00-00-00";
         $result = dbInsert($table,$types,$params);
         if($result['status_code']==200){
