@@ -1,7 +1,8 @@
 <?PHP 
     header("Content-Type:application/json");
     include_once("db/conectar.php");
-    include("busqueda.php");
+    include("funciones.php");
+    
     $sql = "SELECT `busqueda`,COUNT(*) AS n FROM `busquedas`";
     if(isset($_POST['estado'])){
         $estado = $_POST['estado'];
