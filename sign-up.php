@@ -2,6 +2,7 @@
     header("Content-Type:application/json");
     include_once("db/conectar.php");
     include("funciones.php");
+    $log = getLogger("Registro");
     //Comprueba que no haya campos nulos en la petición
     foreach ($_POST as $key => $value) {
         if(!notNull($value)){

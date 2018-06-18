@@ -61,6 +61,13 @@
             </layout>
             <param name="file" value="logs/sesion.log" />
         </appender>
+
+        <appender name="localizacionAppender" class="LoggerAppenderFile">
+            <layout class="LoggerLayoutPattern">
+                <param name="conversionPattern" value="%date [%logger] %message%newline" />
+            </layout>
+            <param name="file" value="logs/localizacion.log" />
+        </appender>
         
         <root>
             <level value="WARN" />
@@ -97,5 +104,9 @@
         <logger name="Sesion">
             <level value="TRACE" />
             <appender_ref ref="sesionAppender"/>
+        </logger>
+        <logger name="Localizacion">
+            <level value="TRACE" />
+            <appender_ref ref="localizacionAppender"/>
         </logger>
     </configuration>

@@ -3,7 +3,7 @@
     include('lib/log4php/Logger.php');
    
     $dblogger;
-    $log;
+    $log = getLogger("class");
     function acceptedsParamError($acceptedParams,$param){
         return array("Parametros aceptados" => $acceptedParams, "Parametro" => $param);
     }
@@ -102,6 +102,7 @@
      * @return array Respuesta en formato json 
      */
     function dbInsert($table, $types, $params){
+        global $log;
         $link = getDBConnection();
         $sql = "INSERT INTO " . $table . " ";
         $columnas = "";
@@ -127,13 +128,14 @@
         for($i = 0; $i < count($values); $i++) {
             $a_params[] = & $values[$i];
         }
+        $log->info($sql." ". arr2str($a_params));
         if($query = $link->prepare($sql)){
             call_user_func_array(array($query,'bind_param'),$a_params);
             $query->execute();
             $new_id = $query->insert_id;
             $query->close();
         }else{
-            $log->error("Ocurrio un error en la consulta" . sqlError($sql,$types,$values));
+            $log->error("Ocurrio un error en la consulta" . arr2str(sqlError($sql,$types,$values)));
             return response(300,sqlError($sql,$types,$values));
         }
         return response(200,array("ID" => $new_id));
@@ -215,6 +217,14 @@
             $req = $JSON;
         }
         return $req;
+    }
+
+    function getTypes($params,$types_ref){
+        $types="";
+        foreach($params as $key => $val){
+            $types .= $types_ref[$key];
+        }
+        return $types;
     }
 
     function methodError($acceptedMethods, $method){
